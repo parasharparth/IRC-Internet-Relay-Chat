@@ -26,7 +26,7 @@ Instructions for Running the Program:
 3) Enter the IP address of the server: 
    a) if client and server are on the same system, then enter "localhost" and click "Ok".
    b) else, enter the IP address of the server (e.g., "10.0.0.5") and click "Ok".
-4) Enter a unique client name (e.g., "Harika") and click "Ok". If a unique client name is not entered, the window will prompt to enter a unique name. 
+4) Enter a unique client name (e.g., "Parth") and click "Ok". If a unique client name is not entered, the window will prompt to enter a unique name. 
 5) Enter the name of the chatRoom the client wishes to join (e.g., "Room1") and click "Ok".
 6) Type the messages and press Enter to broadcast in the room.
 7) To see the available chatRooms, type "LISTOFCHATROOMS" in the message box and press Enter.

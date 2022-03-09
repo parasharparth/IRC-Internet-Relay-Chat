@@ -1,4 +1,7 @@
 package client;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.LayoutManager;
 import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
@@ -57,6 +60,8 @@ public class SocketClient {
         return JOptionPane.showInputDialog(frame,"Which Chat Room would you like to join:", "Chat Room name selection",JOptionPane.QUESTION_MESSAGE);
     }
     
+    
+    
     // Implementation of socket connection and communication in it
     private void run() throws IOException {
          
@@ -101,10 +106,46 @@ public class SocketClient {
      
     }
     
-    public static void main(String[] args) throws Exception {
-        SocketClient client = new SocketClient();
-        client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        client.frame.setVisible(true);
-        client.run();
+    public static void main(String[] args)  {
+    	
+    	try
+    	{
+    		SocketClient client = new SocketClient();
+    		client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    		client.frame.setVisible(true);
+    		client.run();
+    	}
+    	catch(Exception e)
+    	{
+    		System.out.println("Some Error has occured with the server side, Kindly check and restart");
+    		createErrorWindow();
+    	}
     }
+    
+    private static void createErrorWindow() {    
+        JFrame frame = new JFrame("Error Window");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        createUI(frame);
+        frame.setSize(360, 100);      
+        frame.setLocationRelativeTo(null);  
+        frame.setVisible(true);
+     }
+
+     private static void createUI(final JFrame frame){  
+        JPanel panel = new JPanel();
+        LayoutManager layout = new FlowLayout();  
+        panel.setLayout(layout);       
+        JButton button = new JButton("Exit");
+        button.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+              JOptionPane.showMessageDialog(frame, "Server is down,Try Again later",
+                 "Swing Tester", JOptionPane.ERROR_MESSAGE);
+           }
+        });
+
+        panel.add(button);
+        frame.getContentPane().add(panel, BorderLayout.CENTER);    
+     }  
 }

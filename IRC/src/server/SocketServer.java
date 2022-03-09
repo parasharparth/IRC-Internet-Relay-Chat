@@ -23,7 +23,7 @@ public class SocketServer {
     private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>(); 
 //For easy broadcast of messages, hashset is used to maintain a record for all writers of all clients.
     
-    private static HashSet<ChatRoom> chatRooms = new HashSet<ChatRoom>(); // Hashset to maintian a record for all the available chat rooms
+    private static HashSet<ChatRoom> chatRooms = new HashSet<ChatRoom>(); // Hashset to maintain a record for all the available chat rooms
     
     public static void main(String[] args) throws Exception {
         System.out.println("The Internet Relay Chat has its server side running.");
@@ -186,7 +186,8 @@ public class SocketServer {
             }
             catch (IOException e)
             {
-                System.out.println(e);
+            	System.out.println("Error occured, Kindly check the connection with the client or restart the server");
+               // System.out.println(e);
             }
             finally
             {

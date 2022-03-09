@@ -21,6 +21,7 @@ public class ChatRoom
 
     }
     
+    //everything handled
     public void setName(String chatRoomName)
     {
         name = chatRoomName;

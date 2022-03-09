@@ -69,7 +69,7 @@ public class SocketClient {
         output1 = new PrintWriter(socket.getOutputStream(), true);
         
         // Special commands from server are executed
-        while (true) {
+        while (true) { 
             String line = input1.readLine();
             if (line.startsWith("PROVIDEANAME")) {
                 clientName = getName();

@@ -16,7 +16,7 @@ public class ChatRoom
             if (!clients.contains(clientName))
             {
                 clients.add(clientName);
-            }
+            } 
         }
 
     }

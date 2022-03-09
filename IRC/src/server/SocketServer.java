@@ -13,9 +13,9 @@ import java.util.*;
 public class SocketServer {
 
     
-     // The server will listen on port number 9001
+     // The server will listen on port number 8080
  
-    private static final int PORT = 9001;
+    private static final int PORT = 8080;
     
 
     private static HashSet<String> client_names = new HashSet<String>(); //Hashset maintains record of all unique names of clients within a chat room.This eliminated duplicates.
@@ -32,7 +32,13 @@ public class SocketServer {
             while (true) {
                 new Handler(listener.accept()).start(); // it is calling the handler class
             }
-        } finally {
+        } 
+        catch(Exception e)
+        {
+        	System.out.println("Exception occured"); 
+        	System.exit(1);
+        }
+        finally {
             listener.close();
         }
     }
@@ -42,7 +48,8 @@ public class SocketServer {
     private static class Handler extends Thread
     {
         private String name;
-        private String chatRoomName;
+        @SuppressWarnings("unused")
+		private String chatRoomName;
         private Socket socket;
         private BufferedReader input1;
         private PrintWriter output1;
@@ -52,10 +59,11 @@ public class SocketServer {
             this.socket = socket;
         }
         
-       public int checkIfRoomExists(String roomName)
+       @SuppressWarnings({ "unused", "unlikely-arg-type" })
+	public int checkIfRoomExists(String roomName)
         {
             
-            Iterator iterator = chatRooms.iterator(); // new iterator to pass through the data record
+            Iterator<ChatRoom> iterator = chatRooms.iterator(); // new iterator to pass through the data record
             
             while (iterator.hasNext()){ 
                if(iterator.next().equals(roomName))
@@ -69,7 +77,7 @@ public class SocketServer {
         // Gets the chat room object based on input room name
        public ChatRoom getChatRoom(String roomName)
         {
-            Iterator iterator = chatRooms.iterator();
+            Iterator<ChatRoom> iterator = chatRooms.iterator();
             
             while (iterator.hasNext()){
                 output1.println("check_chatroom");
@@ -88,7 +96,7 @@ public class SocketServer {
             
             String chatRooomsList = "";
             
-            Iterator iterator = chatRooms.iterator();
+            Iterator<ChatRoom> iterator = chatRooms.iterator();
             
             while (iterator.hasNext())
             {
@@ -144,14 +152,14 @@ public class SocketServer {
                              chatRooms.add(room);
                          }
                         
-                      room.writers.add(output1);
+                      ChatRoom.writers.add(output1);
                         break;
                     }
                 }
                 
                 output1.println("UNIQUE_NAME");
                 
-		// broadcast of messaged by a client in a chat room begind
+		// broadcast of messaged by a client in a chat room behind
                 while (true) {
                     String input = input1.readLine();
                     if (input == null) {
@@ -159,9 +167,10 @@ public class SocketServer {
                     }
                     String chatRoomName = input.split(":")[0];
                     String messageInput = input.split(":")[1];
-                    ChatRoom room = getChatRoom(chatRoomName);
+                    @SuppressWarnings("unused")
+					ChatRoom room = getChatRoom(chatRoomName);
                     
-                        for (PrintWriter writer :room.writers)
+                        for (PrintWriter writer :ChatRoom.writers)
                         {
                             if(messageInput.startsWith("LISTOFCHATROOMS"))
                             {

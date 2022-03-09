@@ -21,7 +21,7 @@ public class SocketClient {
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
 //        frame.getContentPane().setBackground(Color.RED);
-	frame.pack();
+        frame.pack();
         
  
         textField.addActionListener(new ActionListener() {
@@ -62,7 +62,8 @@ public class SocketClient {
         
         // CLient side socket
         String serverAddress = getServerAddress();
-        Socket socket = new Socket(serverAddress, 9001);
+        @SuppressWarnings("resource")
+		Socket socket = new Socket(serverAddress, 8080);
         input1 = new BufferedReader(new InputStreamReader(
                                                       socket.getInputStream()));
         output1 = new PrintWriter(socket.getOutputStream(), true);

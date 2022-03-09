@@ -10,20 +10,27 @@ import javax.swing.*;
 public class SocketClient {
     
     String clientName,chatRoomName;
+    
     BufferedReader input1;
+    
     PrintWriter output1;
+    
     JFrame frame = new JFrame("Chat_World");
-//    JFrame.setBackground(Color.RED);
+    
     JTextField textField = new JTextField(30);
+    
     JTextArea messageArea = new JTextArea(6, 30);
    
     public SocketClient() {
         
         textField.setEditable(false);
+        
         messageArea.setEditable(false);
+        
         frame.getContentPane().add(textField, "North");
+        
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-//        frame.getContentPane().setBackground(Color.RED);
+        
         frame.pack();
         
  
@@ -117,7 +124,7 @@ public class SocketClient {
     	}
     	catch(Exception e)
     	{
-    		System.out.println("Some Error has occured with the server side, Kindly check and restart");
+    		System.out.println("Something went wrong, Kindly check");
     		createErrorWindow();
     	}
     }
@@ -140,8 +147,8 @@ public class SocketClient {
         button.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-              JOptionPane.showMessageDialog(frame, "Server is down,Try Again later",
-                 "Swing Tester", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(frame, "Something went wrong, Try Again later",
+                 "Error Window", JOptionPane.ERROR_MESSAGE);
            }
         });
 

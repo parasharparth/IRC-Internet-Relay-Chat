@@ -1,36 +1,125 @@
 package server;
 
 import chatroom.*;
+
+import java.awt.*;
+import java.awt.FlowLayout;
+import java.awt.LayoutManager;
+import java.awt.event.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import javax.swing.*;
 
 
-/* 
- An Internet Relay Chat is designed using threads and java swings concepts. A Client chats with other clients by choosing a chat room. Every client will have a unique nam e and every chat room will also have a unique name.
- */ 
-public class SocketServer { 
+/***********************************************************************************************
+ This Internet Relay Chat is designed by using threads and java swings concepts. 
+ A Client chats with other clients by choosing a chat room. 
+ Every client will have a unique name and every chat room will also have a unique name.
+***********************************************************************************************/ 
 
+public class SocketServer extends JFrame implements ActionListener{ 
+
+	/******************************************************************************************
+	 *Generated the Default Serial Version for the serialize interface 
+	 *Serialize interface is internally used by the socket class for transmission of the data
+	 *****************************************************************************************/
+	private static final long serialVersionUID = 1L;
+
+	// The server will listen on port number 8080 , This also needs to be made configurable along with IP address
+	//Also create error codes for the errors so that proper message can be displayed whenever something goes wrong in the exit window
     
-     // The server will listen on port number 8080
- 
-    private static final int PORT = 8080;
+	public static String PORT = "";
+	
+	/********************************************************
+	 * JTextField
+	 * JFrame
+	 * JButton 
+	 * This is for getting port number from the user
+	 *******************************************************/
+    static JTextField t;
+    static JFrame f;
+    static JButton b;
     
-
-    private static HashSet<String> client_names = new HashSet<String>(); //Hashset maintains record of all unique names of clients within a chat room.This eliminated duplicates.
-
+    
+    /************************************************************************************************************************
+     * These HashSets are present for the following reasons
+     * client_names:- HashSet maintains record of all unique names of clients within a chat room.This eliminated duplicates.
+     * writers:- For easy broadcast of messages, hashSet is used to maintain a record for all writers of all clients.
+     * chatRooms:- HashSet to maintain a record for all the available chat rooms
+     ************************************************************************************************************************/
+    private static HashSet<String> client_names = new HashSet<String>(); 
     private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>(); 
-//For easy broadcast of messages, hashset is used to maintain a record for all writers of all clients.
+    private static HashSet<ChatRoom> chatRooms = new HashSet<ChatRoom>(); 
     
-    private static HashSet<ChatRoom> chatRooms = new HashSet<ChatRoom>(); // Hashset to maintain a record for all the available chat rooms
     
-    public static void main(String[] args) throws Exception {
-        System.out.println("The Internet Relay Chat has its server side running.");
-        ServerSocket listener = new ServerSocket(PORT); // Server is listening for clients sockets requests
+    
+    /***********************************************
+     * Main Method
+     * This is the starting point of the program
+     * @param args
+     * @throws Exception
+     **********************************************/
+    @SuppressWarnings("deprecation")
+	public static void main(String[] args) throws Exception {
+    	
+    	/****************************************************************************
+    	 * The First step is to get the port number from the user
+    	 * create a new frame to store text field and button
+    	 * create a new button
+    	 * create a object of the SocketServer class
+    	 * addActionListener to button
+    	 * create a object of JTextField with 16 columns and a given initial text
+    	 * create a panel to add buttons and textField
+    	 ****************************************************************************/
+        f = new JFrame("textfield");
+        b = new JButton("submit");
+        SocketServer te = new SocketServer();
+        b.addActionListener(te);
+        t = new JTextField("enter the text", 16);
+        JPanel p = new JPanel();
+        p.add(t);
+        p.add(b);
+        f.add(p);
+        f.setSize(300, 300);
+        f.show();
+    
+    
+    /********************************
+     * Message for the programmer
+     ********************************/
+    System.out.println("The Internet Relay Chat has its server side running.");
+    
+    
+    /*********************************************************
+     * Server is listening for clients sockets requests
+     *********************************************************/
+    ServerSocket listener = new ServerSocket(Integer.parseInt(PORT)); 
+    
+     
+    
+    /*************************************************************************************************
+     * This will be used to print the number of clients connected with the server at a particular time 
+     *************************************************************************************************/
+    @SuppressWarnings("unused")
+	int numberOfClients = 0;   
+    
+    
+    /****************************************************************************************************
+     * After getting the port number from the user, we have established a socket which is in the
+     * listening state waiting to receive a connection from the client
+     * 
+     * Here, we will call the listener.accept() method which will start listening to the client 
+     * The listener.accept().start() will start a new thread for this new client
+     * numberOfClients++ will increment the number of clients present
+     * 
+     * All this is being done by using the handler
+     ****************************************************************************************************/
         try {
-            while (true) {
-                new Handler(listener.accept()).start(); // it is calling the handler class
+            while (true) { 
+                new Handler(listener.accept()).start(); 
+                numberOfClients++; 
             }
         } 
         catch(Exception e)
@@ -40,11 +129,24 @@ public class SocketServer {
         }
         finally {
             listener.close();
+            numberOfClients--;
         }
     }
-
-    // Every connection between a client and a server will have a dedicated handler class
-
+    
+    
+    /************************************************************************************************
+     * This method is used as an actionEvent listener for getting the port number from the user
+     * @param e:- ActionEvenet
+     ***********************************************************************************************/
+    public void actionPerformed(ActionEvent e)
+    {
+        String s = e.getActionCommand();
+        if (s.equals("submit")) {
+            PORT =  t.getText();
+        }
+    }
+    
+    
     private static class Handler extends Thread
     {
         private String name;
@@ -92,10 +194,8 @@ public class SocketServer {
         
         // gets the list of chat rooms
         public String getChatRoomsList()
-        {
-            
-            String chatRooomsList = "";
-            
+        { 
+            String chatRooomsList = "";   
             Iterator<ChatRoom> iterator = chatRooms.iterator();
             
             while (iterator.hasNext())
@@ -109,64 +209,66 @@ public class SocketServer {
         public void run()
         {
             try
-            {
-                
-                
+            { 
                 input1 = new BufferedReader(new InputStreamReader(socket.getInputStream())); //input stream for the socket
                 output1 = new PrintWriter(socket.getOutputStream(), true); // output stream for the socket
                 
-               
                 // Client's names are checked if they are unique
-                while (true) {
+                while (true) 
+                {
                     output1.println("PROVIDEANAME");
                     name = input1.readLine();
-                    if (name == null) {
+                    if (name == null) 
+                    {
                         return;
                     }
-                    synchronized (client_names) {
-                        if (!client_names.contains(name)) {
+                    synchronized (client_names) 
+                    {
+                        if (!client_names.contains(name)) 
+                        {
                             client_names.add(name);
-			
-                                                   }
+                        }
                         else
-			{
-				
-				output1.println("PROVIDEANAME");
-				
-			}
-			}
+                        {
+                        	output1.println("PROVIDEANAME");	
+                        }
+                    }
                     
                     output1.println("PROVIDEACHATROOMNAME");
-                    String  chatRoomNameInput = input1.readLine();
                     
-                    if (chatRoomNameInput == null) {
+                    String  chatRoomNameInput = input1.readLine();
+                    if (chatRoomNameInput == null) 
+                    {
                         return;
                     }
-                    synchronized (chatRooms) {
-                        
-                       ChatRoom room = getChatRoom(chatRoomNameInput);
+                    synchronized (chatRooms) 
+                    {    
+                        ChatRoom room = getChatRoom(chatRoomNameInput);
                         if(room == null)
                          {
                               room = new ChatRoom();
                               room.setName(chatRoomNameInput);
                              chatRooms.add(room);
                          }
-                        
-                      ChatRoom.writers.add(output1);
+                        ChatRoom.writers.add(output1);
                         break;
                     }
                 }
-                
                 output1.println("UNIQUE_NAME");
                 
-		// broadcast of messaged by a client in a chat room behind
-                while (true) {
+		// broadcast of messages by a client in a chat room behind
+                while (true) 
+                {
                     String input = input1.readLine();
-                    if (input == null) {
+                    if (input == null) 
+                    {
                         return;
                     }
+                    
                     String chatRoomName = input.split(":")[0];
+                    
                     String messageInput = input.split(":")[1];
+                    
                     @SuppressWarnings("unused")
 					ChatRoom room = getChatRoom(chatRoomName);
                     
@@ -187,6 +289,7 @@ public class SocketServer {
             catch (IOException e)
             {
             	System.out.println("Error occured, Kindly check the connection with the client or restart the server");
+            	createErrorWindow();
                // System.out.println(e);
             }
             finally
@@ -201,9 +304,37 @@ public class SocketServer {
                     socket.close(); // close the socket
                 } catch (IOException e)
                 {
+                	System.out.println("Something went wrong, try again later");
+                	createErrorWindow();
                 }
             }
         }
+        private static void createErrorWindow() {    
+            JFrame frame = new JFrame("Error Window");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            createUI(frame);
+            frame.setSize(360, 100);      
+            frame.setLocationRelativeTo(null);  
+            frame.setVisible(true);
+         }
+
+         private static void createUI(final JFrame frame){  
+            JPanel panel = new JPanel();
+            LayoutManager layout = new FlowLayout();  
+            panel.setLayout(layout);       
+            JButton button = new JButton("Exit");
+            button.addActionListener(new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                  JOptionPane.showMessageDialog(frame, "Something went wrong, try again later",
+                     "Error Window", JOptionPane.ERROR_MESSAGE);
+               }
+            });
+
+            panel.add(button);
+            frame.getContentPane().add(panel, BorderLayout.CENTER);    
+         }  
     }
 
 

@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.HashSet;
 
 public class ChatRoom
-{
+{ 
     public String name;
     
     public static HashSet<String> clients = new HashSet<String>(); // Hashset to keep a record of all unique clients so that duplicate clients are not created

@@ -59,7 +59,7 @@ public class SocketClient {
     
     // Implementation of socket connection and communication in it
     private void run() throws IOException {
-        
+         
         // CLient side socket
         String serverAddress = getServerAddress();
         @SuppressWarnings("resource")

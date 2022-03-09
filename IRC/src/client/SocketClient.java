@@ -67,7 +67,7 @@ public class SocketClient {
         input1 = new BufferedReader(new InputStreamReader(
                                                       socket.getInputStream()));
         output1 = new PrintWriter(socket.getOutputStream(), true);
-        
+         
         // Special commands from server are executed
         while (true) { 
             String line = input1.readLine();

@@ -10,7 +10,7 @@ public class ChatRoom
     
     public static HashSet<PrintWriter> writers = new HashSet<PrintWriter>(); // Hashset to keep a record of all writers for unique clients for easy broadcast in chatroom.
     
-    public void addParticipant(String clientName)
+    public void addParticipant(String clientName) 
     {
         synchronized (clients) {
             if (!clients.contains(clientName))

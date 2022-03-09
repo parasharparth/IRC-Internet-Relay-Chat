@@ -10,7 +10,7 @@ import java.util.*;
 /*
  An Internet Relay Chat is designed using threads and java swings concepts. A Client chats with other clients by choosing a chat room. Every client will have a unique nam e and every chat room will also have a unique name.
  */ 
-public class SocketServer {
+public class SocketServer { 
 
     
      // The server will listen on port number 8080

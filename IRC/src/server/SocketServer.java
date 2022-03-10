@@ -77,14 +77,14 @@ public class SocketServer extends JFrame implements ActionListener{
         b = new JButton("submit");
         SocketServer te = new SocketServer();
         b.addActionListener(te);
-        t = new JTextField("enter the text", 16);
+        t = new JTextField(" ", 16);
         JPanel p = new JPanel();
         p.add(t);
         p.add(b);
         f.add(p);
         f.setSize(300, 300);
         f.show();
-    
+        Thread.sleep(10000);
     
     /********************************
      * Message for the programmer
@@ -95,9 +95,10 @@ public class SocketServer extends JFrame implements ActionListener{
     /*********************************************************
      * Server is listening for clients sockets requests
      *********************************************************/
-    ServerSocket listener = new ServerSocket(Integer.parseInt(PORT)); 
+    int port = Integer.parseInt(PORT);
+   	ServerSocket listener = new ServerSocket(port);
+   
     
-     
     
     /*************************************************************************************************
      * This will be used to print the number of clients connected with the server at a particular time 
@@ -129,20 +130,21 @@ public class SocketServer extends JFrame implements ActionListener{
         }
         finally {
             listener.close();
-            numberOfClients--;
+            numberOfClients--; 
         }
     }
     
     
     /************************************************************************************************
      * This method is used as an actionEvent listener for getting the port number from the user
-     * @param e:- ActionEvenet
+     * @param e:- ActionEvent
      ***********************************************************************************************/
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
         if (s.equals("submit")) {
-            PORT =  t.getText();
+            PORT =  t.getText().strip();
+            System.out.println(PORT);
         }
     }
     

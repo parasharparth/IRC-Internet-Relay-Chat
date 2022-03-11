@@ -10,17 +10,24 @@ import java.util.concurrent.*;
 /*******************************************************************************************
  * Client class consisting of the data members 
  * Data members are then used for determining the properties of the client characteristics
- *    
  *******************************************************************************************/
 public class Client extends JFrame implements ActionListener {
 	
 	
-  /*******************************************************************************************************************
-   * Serial ID for determining the serialize number for JVM to create separate pools of threads for client and server 
-   *******************************************************************************************************************/
+/*******************************************************************************************************************
+  * Serial ID for determining the serialize number for JVM to create separate pools of threads for client and server 
+*******************************************************************************************************************/
 	private static final long serialVersionUID = 1L;
 
-/** Client Data Members */
+/*******************************************************************************************************************
+ * Client Data Members
+ * socket:- For initializing the socket connection
+ * shutdown:- Variable for graceful shutdown of the menu
+ * ObjectOutputStream:- For sending data to the server
+ * ObjectInputStream:- For receiving the input from the server (IP, PORT and handshake flags)
+ * ExecutorService pool:- For determining the maximum number of threads that can be executed by the thread pool
+ * PacketListener packetListener:- For continuous receiving of the inputs and outputs of the server
+ *****************************************************************************************************************/
   private Socket socket;
   private boolean shutdown;
   private ObjectOutputStream out;
@@ -28,19 +35,25 @@ public class Client extends JFrame implements ActionListener {
   private ExecutorService pool;
   private PacketListener packetListener;
 
-  /** GUI Data Members */
+  
+  /************************************************************************************************************** 
+   * GUI Data Members 
+   *  loginMenu:- This will handle the login menu for the client
+   * In the login menu, we have,
+   * textField:- for host name and port number (default value at host (for local host) and 8080 respectively)
+   * textArea:- for printing the greeting message, user id display, and the room number display
+   *************************************************************************************************************/
   private LoginMenu loginMenu;
   private JTextArea chatDisplay;
   private JTextField textInput;
   private JTextArea userDisplay;
   private JTextArea roomDisplay;
 
-  // CLIENT METHODS
-
-  /**
+  
+  /***************************************************************************************************
    * Constructor Initializes the client object by running the GUI setup functions and setting the
    * login menu to visible to the user.
-   */
+   ***************************************************************************************************/
   Client() {
     super("IRC Client");
     System.out.println("Starting up client application...");
@@ -50,22 +63,26 @@ public class Client extends JFrame implements ActionListener {
     System.out.println("Success! Client application started.");
   }
 
-  /** Exits the application with status code 0. */
+  
+  /**************************************************************** 
+   * Graceful Exit of the Client windows with exception handling
+   * Exits the application with status code 0.
+   ****************************************************************/
   private void closeClientApplication() {
     System.out.println("Closing client application...");
     System.exit(0);
   }
 
-  /**
+  
+  /******************************************************************************************************
    * Sends out a socket connection request to ip:port. If successful, attempts to instantiate the
-   * object streams, the single thread pool (for holding the packet listener), and the packet
-   * listener. Finally it starts up the packet listener by executing it in the pool and returning
-   * true. If any exceptions occur, it returns false.
-   *
+   * object streams, the single thread pool (for holding the packet listener), and the packet listener. 
+   * Finally it starts up the packet listener by executing it in the pool and returning true. 
+   * If any exceptions occur, it returns false.
    * @param ip a string representing the desired IP address that is being connected to
    * @param port an integer representing the desired port number that is being connected to
    * @return a boolean representing whether successful connection to server was made
-   */
+   *******************************************************************************************************/
   private boolean connectToServer(String ip, int port) {
     System.out.println("Connecting to server...");
     shutdown = false;
@@ -84,11 +101,11 @@ public class Client extends JFrame implements ActionListener {
     return true;
   }
 
-  /**
-   * Sets shutdown to true, thus exiting the infinite incoming connection loop and closing the
-   * server. Also sends a final packet to the server to let it know the user is logging out of the
-   * server.
-   */
+  
+  /********************************************************************************************************
+   * Sets shutdown to true, thus exiting the infinite incoming connection loop and closing the server.
+   *  Also sends a final packet to the server to let it know the user is logging out of the server.
+   *******************************************************************************************************/
   private void disconnectFromServer() {
     System.out.println("Disconnecting from server...");
     shutdown = true;
@@ -97,10 +114,11 @@ public class Client extends JFrame implements ActionListener {
     sendPacket(packet);
   }
 
-  /**
-   * Closes all connections and sets the relevant members to their null values. Finally switches the
-   * visible windows from the chat window to the login window.
-   */
+  
+  /*******************************************************************************************************
+   * Closes all connections and sets the relevant members to their null values. 
+   * Finally switches the visible windows from the chat window to the login window.
+   ******************************************************************************************************/
   private void serverDisconnectCleanup() {
     // disconnect sequence
     System.out.println("Closing connections...");
@@ -123,11 +141,11 @@ public class Client extends JFrame implements ActionListener {
     loginMenu.setVisible(true);
   }
 
-  /**
+  
+  /********************************************************
    * Sends a given packet to the server.
-   *
    * @param packet packet to be sent to the server
-   */
+   ********************************************************/
   private void sendPacket(Packet packet) {
     try {
       out.writeObject(packet);
@@ -138,12 +156,12 @@ public class Client extends JFrame implements ActionListener {
     System.out.println(packet.command + " packet sent to server.");
   }
 
-  /**
-   * Takes a given packet and inspects its command value to route it to the correct function with
-   * the correct data passed to it. Any unrecognized packet command types are ignored.
-   *
+  
+  /*********************************************************************************************************************************
+   * Takes a given packet and inspects its command value to route it to the correct function with the correct data passed to it. 
+   * Any unrecognized packet command types are ignored.
    * @param packet packet to be inspected and rerouted.
-   */
+   *********************************************************************************************************************************/
   private void packetHandler(Packet packet) {
     String command = packet.command;
     switch (command) {
@@ -167,12 +185,16 @@ public class Client extends JFrame implements ActionListener {
     }
   }
 
-  // GUI Methods
 
-  /** Initializes the GUI for the client */
+  /*********************************************************** 
+   * Initializes the GUI for the client 
+   * GUI Methods
+   * setDefaultCloseOperation():- For stopping the client
+   **********************************************************/
   private void clientGUISetup() {
     setSize(900, 500);
     setResizable(false);
+    
     // call stopClient function on close
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(
@@ -184,6 +206,7 @@ public class Client extends JFrame implements ActionListener {
           }
         });
 
+    
     // panel holding all individual displays in grid bag layout
     JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());
@@ -246,11 +269,11 @@ public class Client extends JFrame implements ActionListener {
     panel.add(sendButton, gbc);
   }
 
-  /**
+  
+  /******************************************************************************************
    * Reveals the chat GUI window with a given message, clearing out any previous messages.
-   *
    * @param message string set as the only text in the chat window display
-   */
+   ******************************************************************************************/
   private void startChatGUI(String message) {
     loginMenu.setVisible(false);
     setVisible(true);
@@ -258,28 +281,28 @@ public class Client extends JFrame implements ActionListener {
     chatDisplay.setText(message);
   }
 
-  /**
-   * Takes a string and posts it to the chat window display with the correct formatting. Also sets
-   * the carat position so that the window scrolls as you get new messages and shows the most
-   * recent.
-   *
+  
+  /*************************************************************************************************************
+   * Takes a string and posts it to the chat window display with the correct formatting. 
+   * Also sets the character position so that the window scrolls as you get new messages and shows the most recent.
    * @param message message to be posted to the chat window display
-   */
+   *************************************************************************************************************/
   private void displayToUser(String message) {
     chatDisplay.append("\n" + message);
     chatDisplay.setCaretPosition(chatDisplay.getDocument().getLength());
   }
 
-  /**
-   * Takes a string and parses it to determine if it is a command. If it is determined to be a
-   * command (starting with '\@'), then it is further parsed to determine which kind and does the
-   * necessary error checking for malformed arguments. If any arguments are malformed, it outputs an
-   * error message to the user describing the malformed argument. If the input is not a command, it
-   * assumes it is a message to be sent to all users. Finally, once the input is parsed, the packet
-   * is sent to the server with the correct command argument.
-   *
+  
+  /******************************************************************************************************************************
+   * @summary:- determining what @<command> maps to
+   * Takes a string and parses it to determine if it is a command. 
+   * If it is determined to be a command (starting with '\@'), then it is further parsed to determine ->
+   * which kind and does the necessary error checking for malformed arguments. 
+   * If any arguments are malformed, it outputs an error message to the user describing the malformed argument. 
+   * If the input is not a command, it assumes it is a message to be sent to all users. 
+   * Finally, once the input is parsed, the packet is sent to the server with the correct command argument.
    * @param userInput
-   */
+   ****************************************************************************************************************************/
   private void parseInput(String userInput) {
     Packet packet = new Packet();
     if (userInput.startsWith("@")) {
@@ -380,12 +403,11 @@ public class Client extends JFrame implements ActionListener {
   }
 
   
-  /**
+  /***********************************************************************************************
    * Takes an action event interaction with the chat window GUI, and grabs the text from the user
    * input text box and hands it to the parseInput() function for interpreting and manipulation.
-   *
    * @param event ActionEvent object created by the GUI interaction
-   */
+   **********************************************************************************************/
   public void actionPerformed(ActionEvent event) {
     String userInput = textInput.getText();
     if (userInput.equals("")) return;
@@ -394,17 +416,20 @@ public class Client extends JFrame implements ActionListener {
   }
 
   
-  /**
-   * The PacketListener is a runnable thread which will asyncronously listener for incoming packets
-   * from the server. The run function is called when the PacketListener is handed to the thread
-   * pool and executed. It loops while the shutdown member is false, attempting to read in packets
-   * from the server. On any failure to read from the server, it calls the disconnectFromServer()
-   * function to close the connection and leave the server. When it gets a packet from the server,
-   * it hands it to the packetHandler() function to be interpreted and manipulated. Once it exits
-   * the loop, it calls the serverDisconnectCleanup() function to close all the connections and
-   * return to the login GUI.
-   */
+  /*********************************************************************************************************************************************
+   * @summary:- 
+   * The PacketListener is a runnable thread which will a-synchronously AS WELL AS synchronously listen for incoming packets from the server. 
+   * The run function is called when the PacketListener is handed to the thread pool and executed.
+   * It loops while the shutdown member is false, attempting to read in packets from the server. 
+   * On any failure to read from the server, it calls the disconnectFromServer()  function to close the connection and leave the server. 
+   * When it gets a packet from the server, it hands it to the packetHandler() function to be interpreted and manipulated. 
+   * Once it exits the loop, it calls the serverDisconnectCleanup() function to close all the connections and return to the login GUI.
+   * @implNote:- Runnable Interface
+   * @implSpec:- overridden run() method responsible for the client to the spawned 
+   * @serverDisconnectCleanup():- method is responsible for freeing up the resources(from the thread-pool)
+   ******************************************************************************************************************************************/
   private class PacketListener implements Runnable {
+	  
     @Override
     public void run() {
       // packet listening loop
@@ -424,16 +449,20 @@ public class Client extends JFrame implements ActionListener {
   }
 
   
-  /**
+  /*********************************************************************************************************
    * The login menu is the GUI object that the user utilizes to instigate connections to the server.
-   */
+   *********************************************************************************************************/
   private class LoginMenu extends JFrame implements ActionListener {
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-	/** GUI Data Members */
+	
+	/************************************************************************************************
+	 * Data Members for the login menu after a client starts/exits 
+	 * feedback :- For getting the proper feedback from the client
+	 * portField:- For printing the port number on the start/exit screen
+	 * usernameField:-For printing the user-name on the start/exit screen
+	 * startButton:- For start button for restarting the server
+	 * clearButton:- For clearing the menu
+	 **********************************************************************************************/
     JTextArea feedback;
 
     JTextField ipField;
@@ -443,7 +472,9 @@ public class Client extends JFrame implements ActionListener {
     JButton clearButton;
 
     
-    /** Constructor - calls the GUI initialization for the login window */
+    /***********************************************************************************************
+     *  Constructor - calls the GUI initialization for the login window 
+     ***********************************************************************************************/
     LoginMenu() {
       super("IRC Client");
       loginGUISetup();
@@ -451,7 +482,9 @@ public class Client extends JFrame implements ActionListener {
 
     
     // Methods
-    /** initializes the GUI for the login menu */
+    /***********************************************************************************************
+     * initializes the GUI for the login menu 
+     ***********************************************************************************************/
     private void loginGUISetup() {
       setSize(550, 250);
       setResizable(false);
@@ -511,21 +544,19 @@ public class Client extends JFrame implements ActionListener {
       panel.add(clearButton);
     }
 
-    /**
+    /***********************************************************************************************
      * appends feedback to the feedback display in the login menu
-     *
      * @param message - String of feedback to be appended to display
-     */
+     **********************************************************************************************/
     private void displayFeedback(String message) {
       feedback.append("\n" + message);
       feedback.setCaretPosition(feedback.getDocument().getLength());
     }
 
-    /**
-     * on an action event occuring in the login menu, this function is called
-     *
+    /***********************************************************************************************
+     * on an action event which occurs in the login menu, this function is called
      * @param event - ActionEvent object representing an event that has occurred in the login menu
-     */
+     **********************************************************************************************/
     public void actionPerformed(ActionEvent event) {
       // connect button pressed
       if (event.getSource() == connectButton) {
@@ -561,6 +592,12 @@ public class Client extends JFrame implements ActionListener {
       }
     }
   }
+  
+  /*******************************************************************************************
+   * This is the starting point of the Client class
+   * The client constructor is called which is then responsible for calling the consecutive
+   * @param args
+   *******************************************************************************************/
 
   public static void main(String[] args) {
     @SuppressWarnings("unused")

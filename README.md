@@ -1,5 +1,5 @@
 **********************************************************************************************************************************
-README File for Internet Relay Chat (IRC) Protocol implemented as part of project requirement of CS594 (Internetworking Protocols).
+**README File for Internet Relay Chat (IRC) Protocol implemented as part of project requirement of CS594 (Internetworking Protocols).**
 **********************************************************************************************************************************
 
 

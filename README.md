@@ -70,9 +70,9 @@ Instructions for Compiling the program:
 Instructions for Running the Program:
 ====================================
 
-1) Start the server: java SocketServer
+1) Start the server: java Server
 2) The server GUI window will open and then ask the user to connect to the 
-3) Start the client: java SocketClient (Type this command in a different xterm/terminal). For more clients, open several xterms and type this command.
+3) Start the client: java Client (Type this command in a different xterm/terminal). For more clients, open several xterms and type this command.
 4) Enter the IP address of the server: 
    a) if client and server are on the same system, then enter "localhost" and click "Ok".
    b) else, enter the IP address of the server (e.g., "10.0.0.5") and click "Ok".

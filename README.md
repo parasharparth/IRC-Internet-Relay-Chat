@@ -2,6 +2,8 @@
 README File for Internet Relay Chat (IRC) Protocol implemented as part of project requirement of CS594 (Internetworking Protocols).
 **********************************************************************************************************************************
 
+
+
 ********************************************************************************************************************************************
 Version-1 
 Using the synchronous keyword for performing packet and client sync

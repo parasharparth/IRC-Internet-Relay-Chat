@@ -149,6 +149,10 @@ public class SocketServer extends JFrame implements ActionListener{
     }
     
     
+    /*****************************************************************************************************
+     * This is the handler where new threads (clients) are connected to the 
+     *
+     ****************************************************************************************************/
     private static class Handler extends Thread
     {
         private String name;

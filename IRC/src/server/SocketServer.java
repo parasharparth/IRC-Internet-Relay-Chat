@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.*;
 import javax.swing.*;
  
- 
+  
 /***********************************************************************************************
  This Internet Relay Chat is designed by using threads and java swings concepts. 
  A Client chats with other clients by choosing a chat room. 

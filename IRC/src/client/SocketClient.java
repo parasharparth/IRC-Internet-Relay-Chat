@@ -13,7 +13,7 @@ public class SocketClient {
     
     BufferedReader input1;
     
-    PrintWriter output1;  
+    PrintWriter output1;   
     
     JFrame frame = new JFrame("Chat_World");
     

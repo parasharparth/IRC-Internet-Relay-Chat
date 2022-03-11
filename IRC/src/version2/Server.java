@@ -31,7 +31,7 @@ public class Server extends JFrame implements ActionListener {
  * This is by the virtue of the number of threads being created by the server.
  * The other variables include:- 
  * connectionListener :- This will keep the server in an infinite loop listening for new clients
- * serverSocket pool :- This is used for managing the server thread pool properly by using synchronize keyword
+ * serverSocket pool :- This is used for managing the server thread pool properly by using synchronize keyword 
  * serverHosted:- tells the number (id) of the server on which the client is being hosted
  * shutdown:- For shutdown purposes
  * threadCount:- For keeping a count on the number of threads

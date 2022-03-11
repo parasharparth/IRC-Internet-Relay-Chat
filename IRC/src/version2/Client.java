@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.*;
- 
+  
 /*******************************************************************************************
  * Client class consisting of the data members 
  * Data members are then used for determining the properties of the client characteristics

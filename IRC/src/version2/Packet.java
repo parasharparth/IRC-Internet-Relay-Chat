@@ -2,7 +2,7 @@ package version2;
 
 import java.io.Serializable;
 
- 
+  
 /**************************************************************************************************************
  * Represents the object that is passed between the server and client. 
  * The packet object contains the information that needs to be parsed by both the client and the server.
